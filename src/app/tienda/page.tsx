@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Grid3X3, Grid2X2, LayoutGrid, SlidersHorizontal, X, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -20,7 +20,7 @@ import { useReviewStore } from '@/lib/store/useReviewStore';
 import { CATEGORIES } from '@/types';
 import { Product } from '@/types';
 
-export default function TiendaPage() {
+function TiendaContent() {
   const searchParams = useSearchParams();
   const { products, loadFromStorage } = useProductStore();
   const { getAverageRating } = useReviewStore();
@@ -91,7 +91,6 @@ export default function TiendaPage() {
       return true;
     });
 
-    // Sort
     switch (sortBy) {
       case 'newest':
         filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -112,7 +111,6 @@ export default function TiendaPage() {
         filtered.sort((a, b) => getAverageRating(b.id) - getAverageRating(a.id));
         break;
       default:
-        // featured - keep original order or sort by badge
         filtered.sort((a, b) => {
           if (a.badge === 'bestseller' && b.badge !== 'bestseller') return -1;
           if (b.badge === 'bestseller' && a.badge !== 'bestseller') return 1;
@@ -154,7 +152,6 @@ export default function TiendaPage() {
         onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
-      {/* Breadcrumb */}
       <div className="bg-gradient-to-r from-pink-50 to-white py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="text-sm text-grey mb-2">
@@ -186,7 +183,6 @@ export default function TiendaPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Mobile Filter Button */}
           <button
             onClick={() => setShowMobileFilters(true)}
             className="lg:hidden flex items-center justify-center gap-2 px-4 py-3 bg-pink-50 text-primary rounded-full text-sm font-medium hover:bg-pink-100 transition-colors"
@@ -195,7 +191,6 @@ export default function TiendaPage() {
             Filtros
           </button>
 
-          {/* Mobile Filters Drawer */}
           {showMobileFilters && (
             <div className="fixed inset-0 z-50 lg:hidden">
               <motion.div 
@@ -232,7 +227,6 @@ export default function TiendaPage() {
             </div>
           )}
 
-          {/* Desktop Sidebar */}
           <div className="hidden lg:block">
             <SidebarFilters
               categories={CATEGORIES}
@@ -246,19 +240,15 @@ export default function TiendaPage() {
             />
           </div>
 
-          {/* Products Grid */}
           <div className="flex-1">
-            {/* Toolbar */}
             <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-100">
               <p className="text-sm text-grey">
                 Mostrando {filteredAndSortedProducts.length > 0 ? startIndex + 1 : 0}-{Math.min(startIndex + itemsPerPage, filteredAndSortedProducts.length)} de {filteredAndSortedProducts.length} productos
               </p>
 
               <div className="flex items-center gap-4">
-                {/* Sort Select */}
                 <SortSelect value={sortBy} onChange={setSortBy} />
 
-                {/* Items per page */}
                 <div className="hidden sm:flex items-center gap-2 text-sm text-grey">
                   <span>ver:</span>
                   {[12, 24, 36].map((num) => (
@@ -276,7 +266,6 @@ export default function TiendaPage() {
                   ))}
                 </div>
 
-                {/* Grid Toggle */}
                 <div className="flex items-center gap-1 border-l border-gray-200 pl-4">
                   {[
                     { cols: 4, icon: Grid3X3 },
@@ -299,12 +288,11 @@ export default function TiendaPage() {
               </div>
             </div>
 
-            {/* Search Query Tag */}
             {searchQuery && (
               <div className="mb-6 flex items-center gap-2">
                 <span className="text-grey">Resultados para:</span>
                 <span className="bg-pink-100 text-secondary px-4 py-1.5 rounded-full text-sm flex items-center gap-2 font-medium">
-                  "{searchQuery}"
+                  &quot;{searchQuery}&quot;
                   <button onClick={() => setSearchQuery('')} className="hover:text-accent">
                     <X className="w-4 h-4" />
                   </button>
@@ -312,7 +300,6 @@ export default function TiendaPage() {
               </div>
             )}
 
-            {/* Products */}
             {paginatedProducts.length > 0 ? (
               <>
                 <div
@@ -339,7 +326,6 @@ export default function TiendaPage() {
                   ))}
                 </div>
 
-                {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="flex items-center justify-center gap-2 mt-12">
                     <button
@@ -421,5 +407,17 @@ export default function TiendaPage() {
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
       <AdminPanel isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} />
     </div>
+  );
+}
+
+export default function TiendaPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-secondary"></div>
+      </div>
+    }>
+      <TiendaContent />
+    </Suspense>
   );
 }
