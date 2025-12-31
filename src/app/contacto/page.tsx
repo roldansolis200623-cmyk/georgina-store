@@ -35,7 +35,7 @@ export default function ContactoPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
-      setFiles(prev => [...prev, ...newFiles].slice(0, 5)); // Máximo 5 archivos
+      setFiles(prev => [...prev, ...newFiles].slice(0, 5));
     }
   };
 
@@ -44,32 +44,41 @@ export default function ContactoPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  
-  if (!formData.nombre || !formData.email || !formData.mensaje) {
-    showToast('Por favor completa los campos requeridos', 'error');
-    return;
-  }
+    e.preventDefault();
+    setIsSubmitting(true);
 
-  setIsSubmitting(true);
+    try {
+      const data = new FormData();
+      data.append('nombre', formData.nombre);
+      data.append('email', formData.email);
+      data.append('telefono', formData.telefono || 'No proporcionado');
+      data.append('mensaje', formData.mensaje);
+      
+      files.forEach((file, index) => {
+        data.append(`archivo_${index + 1}`, file);
+      });
 
-  // Crear email con mailto
-  const to = 'georginastein08@gmail.com';
-  const subject = `Contacto Georgina Store - ${formData.nombre}`;
-  const body = `Nombre: ${formData.nombre}
-Email: ${formData.email}
-Telefono: ${formData.telefono || 'No proporcionado'}
+      const response = await fetch('https://formspree.io/f/mbdjnypn', {
+        method: 'POST',
+        body: data,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
 
-Mensaje:
-${formData.mensaje}`;
+      if (response.ok) {
+        showToast('Mensaje enviado correctamente!', 'success');
+        setFormData({ nombre: '', email: '', telefono: '', mensaje: '' });
+        setFiles([]);
+      } else {
+        throw new Error('Error al enviar');
+      }
+    } catch (error) {
+      showToast('Error al enviar el mensaje', 'error');
+    }
 
-  // Abrir cliente de correo
-  window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  
-  showToast('Abriendo correo...', 'success');
-  setFormData({ nombre: '', email: '', telefono: '', mensaje: '' });
-  setIsSubmitting(false);
-};
+    setIsSubmitting(false);
+  };
 
   if (!mounted) {
     return (
@@ -239,7 +248,7 @@ ${formData.mensaje}`;
 
                 {/* Archivos adjuntos */}
                 <div>
-                  <label className="block text-sm font-medium text-primary mb-2">Archivos adjuntos</label>
+                  <label className="block text-sm font-medium text-primary mb-2">Archivos adjuntos (opcional)</label>
                   <div 
                     onClick={() => fileInputRef.current?.click()}
                     className="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center cursor-pointer hover:border-secondary hover:bg-secondary/5 transition-colors"
@@ -257,7 +266,6 @@ ${formData.mensaje}`;
                     className="hidden"
                   />
 
-                  {/* Lista de archivos */}
                   {files.length > 0 && (
                     <div className="mt-3 space-y-2">
                       {files.map((file, index) => (
