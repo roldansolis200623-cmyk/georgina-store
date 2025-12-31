@@ -14,12 +14,11 @@ import { LoginModal } from '@/components/auth/LoginModal';
 import { AdminPanel } from '@/components/admin/AdminPanel';
 import { ProductCardHomeline } from '@/components/catalog/ProductCardHomeline';
 import { ProductModal } from '@/components/catalog/ProductModal';
-import { useProductStore } from '@/lib/store/useProductStore';
-import { Product } from '@/types';
 import { useSupabaseProducts } from '@/lib/store/useSupabaseProducts';
+import { Product } from '@/types';
 
 export default function HomePage() {
-  const { products, fetchProducts, isLoading } = useSupabaseProducts();
+  const { products, fetchProducts } = useSupabaseProducts();
   const [mounted, setMounted] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
@@ -27,25 +26,17 @@ export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-  setMounted(true);
-  fetchProducts();
-}, [fetchProducts]);
+    setMounted(true);
+    fetchProducts();
+  }, [fetchProducts]);
 
   const featuredProducts = products.slice(0, 8);
-  const saleProducts = products.filter(p => p.originalPrice).slice(0, 4);
+  const saleProducts = products.filter((p) => p.originalPrice).slice(0, 4);
 
   const handleQuickView = (product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
   };
-
-  if (!mounted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-secondary"></div>
-      </div>
-    );
-  }
 
   const categories = [
     { name: 'Decoracion', slug: 'decoracion', desc: 'Accesorios y detalles', color: 'from-pink-100 to-rose-50' },
@@ -60,46 +51,62 @@ export default function HomePage() {
     { icon: Phone, title: 'Soporte', desc: 'Atencion personalizada' },
   ];
 
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-secondary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <Header 
+      <Header
         currentPage="inicio"
         onOpenLogin={() => setIsLoginOpen(true)}
         onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
-      {/* Hero Section - Optimizado para móvil */}
-<section className="relative h-[100svh] md:h-[80vh] min-h-[500px] md:min-h-[600px] overflow-hidden">
-  <div className="absolute inset-0">
-    <Image
-      src="/images/banners/hero-banner.jpg"
-      alt="Georgina Home - Muebles y Decoracion"
-      fill
-      className="object-cover object-[70%_center] md:object-center"
-      priority
-    />
-    {/* Overlay para mejor legibilidad en móvil */}
-    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent md:hidden" />
-  </div>
-  
-  <div className="absolute bottom-20 md:bottom-16 left-1/2 -translate-x-1/2 z-10 w-full px-4 md:px-0 md:w-auto">
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.5 }}
-      className="text-center"
-    >
-      <Link
-        href="/tienda"
-        className="inline-flex items-center gap-2 bg-secondary text-white px-8 py-4 rounded-full font-medium hover:bg-accent transition-all hover:shadow-lg text-sm md:text-base"
-      >
-        VER TIENDA
-        <ArrowRight className="w-5 h-5" />
-      </Link>
-    </motion.div>
-  </div>
-</section>
+      {/* Hero Section - Desktop y Móvil */}
+      <section className="relative h-[100svh] md:h-[80vh] min-h-[600px] overflow-hidden">
+        <div className="absolute inset-0">
+          {/* Imagen para MÓVIL */}
+          <Image
+            src="/images/banners/hero-banner-mobile.jpg"
+            alt="Georgina Home - Muebles y Decoracion"
+            fill
+            className="object-cover object-top md:hidden"
+            priority
+          />
+          {/* Imagen para DESKTOP */}
+          <Image
+            src="/images/banners/hero-banner.jpg"
+            alt="Georgina Home - Muebles y Decoracion"
+            fill
+            className="object-cover hidden md:block"
+            priority
+          />
+        </div>
 
+        <div className="absolute bottom-24 md:bottom-16 left-1/2 -translate-x-1/2 z-10 w-full px-4 md:px-0 md:w-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="text-center"
+          >
+            <Link
+              href="/tienda"
+              className="inline-flex items-center gap-2 bg-secondary text-white px-8 py-4 rounded-full font-medium hover:bg-accent transition-all hover:shadow-lg shadow-md"
+            >
+              VER TIENDA
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Categorías */}
       <section className="py-20 bg-gradient-to-b from-white to-pink-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -131,10 +138,10 @@ export default function HomePage() {
               >
                 <Link
                   href={`/tienda?categoria=${cat.slug}`}
-                  className={`group block relative h-64 bg-gradient-to-br ${cat.color} overflow-hidden rounded-2xl border border-pink-100 hover:shadow-lg hover:shadow-pink-100 transition-all`}
+                  className={`group block relative h-48 md:h-64 bg-gradient-to-br ${cat.color} overflow-hidden rounded-2xl border border-pink-100 hover:shadow-lg hover:shadow-pink-100 transition-all`}
                 >
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                    <h3 className="font-playfair text-3xl text-primary font-bold mb-2 group-hover:text-secondary transition-colors">
+                    <h3 className="font-playfair text-2xl md:text-3xl text-primary font-bold mb-2 group-hover:text-secondary transition-colors">
                       {cat.name}
                     </h3>
                     <p className="text-grey text-sm mb-4">{cat.desc}</p>
@@ -149,6 +156,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Productos Destacados */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -171,7 +179,7 @@ export default function HomePage() {
             </Link>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {featuredProducts.map((product, index) => (
               <motion.div
                 key={product.id}
@@ -190,9 +198,10 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Features */}
       <section className="py-16 bg-pink-50 border-y border-pink-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
@@ -202,17 +211,18 @@ export default function HomePage() {
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="w-16 h-16 mx-auto mb-4 bg-white rounded-full flex items-center justify-center shadow-sm">
-                  <feature.icon className="w-7 h-7 text-secondary" />
+                <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 bg-white rounded-full flex items-center justify-center shadow-sm">
+                  <feature.icon className="w-6 h-6 md:w-7 md:h-7 text-secondary" />
                 </div>
-                <h3 className="font-medium text-primary mb-1">{feature.title}</h3>
-                <p className="text-sm text-grey">{feature.desc}</p>
+                <h3 className="font-medium text-primary text-sm md:text-base mb-1">{feature.title}</h3>
+                <p className="text-xs md:text-sm text-grey">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Productos en Oferta */}
       {saleProducts.length > 0 && (
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -230,7 +240,7 @@ export default function HomePage() {
               </h2>
             </motion.div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {saleProducts.map((product, index) => (
                 <motion.div
                   key={product.id}
@@ -250,6 +260,7 @@ export default function HomePage() {
         </section>
       )}
 
+      {/* CTA WhatsApp */}
       <section className="py-20 bg-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -257,10 +268,10 @@ export default function HomePage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="font-playfair text-3xl md:text-4xl text-white mb-4">
+            <h2 className="font-playfair text-2xl md:text-4xl text-white mb-4">
               Lista para transformar tu hogar?
             </h2>
-            <p className="text-white/70 max-w-2xl mx-auto mb-8">
+            <p className="text-white/70 max-w-2xl mx-auto mb-8 text-sm md:text-base">
               Contactanos por WhatsApp y te ayudamos a encontrar lo que buscas
             </p>
             <a
@@ -280,7 +291,7 @@ export default function HomePage() {
       <WhatsAppButton />
       <CartButton />
       <CartDrawer />
-      
+
       {selectedProduct && (
         <ProductModal
           product={selectedProduct}
