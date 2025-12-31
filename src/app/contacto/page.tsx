@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Clock, Send, Instagram, MessageCircle, Paperclip, X } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, Instagram, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
@@ -23,53 +23,35 @@ export default function ContactoPage() {
     telefono: '',
     mensaje: '',
   });
-  const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { showToast } = useToast();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const newFiles = Array.from(e.target.files);
-      setFiles(prev => [...prev, ...newFiles].slice(0, 5));
-    }
-  };
-
-  const removeFile = (index: number) => {
-    setFiles(prev => prev.filter((_, i) => i !== index));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      const data = new FormData();
-      data.append('nombre', formData.nombre);
-      data.append('email', formData.email);
-      data.append('telefono', formData.telefono || 'No proporcionado');
-      data.append('mensaje', formData.mensaje);
-      
-      files.forEach((file, index) => {
-        data.append(`archivo_${index + 1}`, file);
-      });
-
       const response = await fetch('https://formspree.io/f/mbdjnypn', {
         method: 'POST',
-        body: data,
+        body: JSON.stringify({
+          nombre: formData.nombre,
+          email: formData.email,
+          telefono: formData.telefono || 'No proporcionado',
+          mensaje: formData.mensaje,
+        }),
         headers: {
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
         }
       });
 
       if (response.ok) {
         showToast('Mensaje enviado correctamente!', 'success');
         setFormData({ nombre: '', email: '', telefono: '', mensaje: '' });
-        setFiles([]);
       } else {
         throw new Error('Error al enviar');
       }
@@ -244,44 +226,6 @@ export default function ContactoPage() {
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary outline-none resize-none"
                     placeholder="En que podemos ayudarte?"
                   />
-                </div>
-
-                {/* Archivos adjuntos */}
-                <div>
-                  <label className="block text-sm font-medium text-primary mb-2">Archivos adjuntos (opcional)</label>
-                  <div 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center cursor-pointer hover:border-secondary hover:bg-secondary/5 transition-colors"
-                  >
-                    <Paperclip className="w-6 h-6 text-grey mx-auto mb-2" />
-                    <p className="text-sm text-grey">Clic para adjuntar archivos</p>
-                    <p className="text-xs text-gray-400 mt-1">PDF, imagenes (max 5 archivos)</p>
-                  </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    multiple
-                    accept="image/*,.pdf,.doc,.docx"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-
-                  {files.length > 0 && (
-                    <div className="mt-3 space-y-2">
-                      {files.map((file, index) => (
-                        <div key={index} className="flex items-center justify-between bg-white p-2 rounded-lg border">
-                          <span className="text-sm text-grey truncate flex-1">{file.name}</span>
-                          <button
-                            type="button"
-                            onClick={() => removeFile(index)}
-                            className="p-1 text-red-500 hover:bg-red-50 rounded"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
 
                 <button

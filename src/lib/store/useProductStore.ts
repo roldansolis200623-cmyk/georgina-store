@@ -338,7 +338,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
   },
 
   login: (password) => {
-    if (password === 'georgina2025') {
+    if (password === 'Stein272316$') {
       const session: Session = {
         timestamp: Date.now(),
         expiresAt: Date.now() + SESSION_TIMEOUT,
