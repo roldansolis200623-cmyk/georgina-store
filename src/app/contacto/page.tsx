@@ -44,44 +44,32 @@ export default function ContactoPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  e.preventDefault();
+  
+  if (!formData.nombre || !formData.email || !formData.mensaje) {
+    showToast('Por favor completa los campos requeridos', 'error');
+    return;
+  }
 
-    try {
-      // Crear FormData para enviar archivos
-      const data = new FormData();
-      data.append('nombre', formData.nombre);
-      data.append('email', formData.email);
-      data.append('telefono', formData.telefono || 'No proporcionado');
-      data.append('mensaje', formData.mensaje);
-      
-      // Agregar archivos
-      files.forEach((file, index) => {
-        data.append(`archivo_${index + 1}`, file);
-      });
+  setIsSubmitting(true);
 
-      // Enviar a Formspree (REEMPLAZA 'TU_FORM_ID' con tu ID real)
-      const response = await fetch('https://formspree.io/f/TU_FORM_ID', {
-        method: 'POST',
-        body: data,
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
+  // Crear email con mailto
+  const to = 'georginastein08@gmail.com';
+  const subject = `Contacto Georgina Store - ${formData.nombre}`;
+  const body = `Nombre: ${formData.nombre}
+Email: ${formData.email}
+Telefono: ${formData.telefono || 'No proporcionado'}
 
-      if (response.ok) {
-        showToast('Mensaje enviado correctamente!', 'success');
-        setFormData({ nombre: '', email: '', telefono: '', mensaje: '' });
-        setFiles([]);
-      } else {
-        throw new Error('Error al enviar');
-      }
-    } catch (error) {
-      showToast('Error al enviar el mensaje', 'error');
-    }
+Mensaje:
+${formData.mensaje}`;
 
-    setIsSubmitting(false);
-  };
+  // Abrir cliente de correo
+  window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  
+  showToast('Abriendo correo...', 'success');
+  setFormData({ nombre: '', email: '', telefono: '', mensaje: '' });
+  setIsSubmitting(false);
+};
 
   if (!mounted) {
     return (
