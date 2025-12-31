@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Minus, Plus, ShoppingCart, Heart, Share2, MessageCircle, 
   ChevronLeft, ChevronRight, Check, Truck, Shield, RotateCcw,
-  Facebook, Twitter, Mail, ZoomIn
+  ZoomIn
 } from 'lucide-react';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
@@ -19,7 +19,7 @@ import { AdminPanel } from '@/components/admin/AdminPanel';
 import { ProductCardHomeline } from '@/components/catalog/ProductCardHomeline';
 import { ProductReviews } from '@/components/catalog/ProductReviews';
 import { StarRating } from '@/components/catalog/StarRating';
-import { useProductStore } from '@/lib/store/useProductStore';
+import { useSupabaseProducts } from '@/lib/store/useSupabaseProducts';
 import { useCartStore } from '@/lib/store/useCartStore';
 import { useFavoritesStore } from '@/lib/store/useFavoritesStore';
 import { useToast } from '@/components/ui/Toast';
@@ -30,13 +30,14 @@ type TabType = 'descripcion' | 'informacion' | 'valoraciones' | 'envios';
 export default function ProductoPage() {
   const params = useParams();
   const router = useRouter();
-  const { products, loadFromStorage } = useProductStore();
+  const { products, fetchProducts } = useSupabaseProducts();
   const { addItem } = useCartStore();
   const { toggleFavorite, isFavorite } = useFavoritesStore();
   const { showToast } = useToast();
 
   const [mounted, setMounted] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<TabType>('descripcion');
@@ -47,13 +48,20 @@ export default function ProductoPage() {
 
   useEffect(() => {
     setMounted(true);
-    loadFromStorage();
-  }, [loadFromStorage]);
+    fetchProducts();
+  }, [fetchProducts]);
 
   useEffect(() => {
     if (mounted && products.length > 0 && params.id) {
       const found = products.find(p => p.id === Number(params.id));
       setProduct(found || null);
+      setLoading(false);
+    } else if (mounted && products.length === 0) {
+      // Esperar un poco más por si los productos están cargando
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+      return () => clearTimeout(timer);
     }
   }, [mounted, products, params.id]);
 
@@ -64,7 +72,7 @@ export default function ProductoPage() {
     setMousePosition({ x, y });
   };
 
-  if (!mounted) {
+  if (!mounted || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-secondary"></div>
@@ -115,7 +123,7 @@ export default function ProductoPage() {
   };
 
   const handleWhatsApp = () => {
-    const message = `Hola! Me interesa el producto: ${product.name} - ${formatPrice(product.price)}. Quiero consultar stock.`;
+    const message = `Hola! Me interesa el producto: ${product.name} - ${formatPrice(product.price)}. Quiero consultar disponibilidad.`;
     window.open(`https://wa.me/56985633114?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -291,7 +299,7 @@ export default function ProductoPage() {
                     <span className="text-green-600">
                       {product.stock && product.stock <= 5 
                         ? `¡Solo quedan ${product.stock} unidades!` 
-                        : `${product.stock} disponibles`
+                        : `${product.stock || 'Stock'} disponibles`
                       }
                     </span>
                   </>
@@ -458,9 +466,9 @@ export default function ProductoPage() {
                   className="grid grid-cols-1 sm:grid-cols-3 gap-6"
                 >
                   {[
-                    { icon: Truck, title: 'Envio a domicilio', desc: 'Despacho a todo Chile en 7 dias habiles' },
-                    { icon: Shield, title: 'Garantia', desc: 'Productos garantizados contra defectos' },
-                    { icon: RotateCcw, title: 'Devoluciones', desc: '30 dias para cambios y devoluciones' },
+                    { icon: Truck, title: 'Envio a domicilio', desc: 'Despacho a todo Chile' },
+                    { icon: Shield, title: 'Garantia', desc: 'Productos garantizados' },
+                    { icon: RotateCcw, title: 'Devoluciones', desc: '30 dias para cambios' },
                   ].map((item) => (
                     <div key={item.title} className="flex items-start gap-4 p-6 bg-pink-50 rounded-2xl">
                       <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center flex-shrink-0">
