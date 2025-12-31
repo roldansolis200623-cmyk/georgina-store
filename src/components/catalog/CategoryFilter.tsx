@@ -1,38 +1,32 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { useProductStore } from '@/lib/store/useProductStore';
-import { Category } from '@/types';
-import { cn } from '@/lib/utils/cn';
+import { Category, CATEGORIES } from '@/types';
+
+interface CategoryFilterProps {
+  selected: Category | 'all';
+  onChange: (category: Category | 'all') => void;
+}
 
 const categories: { value: Category | 'all'; label: string }[] = [
   { value: 'all', label: 'Todos' },
-  { value: 'furniture', label: 'Muebles' },
-  { value: 'decoration', label: 'Decoración' },
-  { value: 'lighting', label: 'Iluminación' },
-  { value: 'textiles', label: 'Textiles' },
+  ...CATEGORIES.map(cat => ({ value: cat.value, label: cat.label }))
 ];
 
-export function CategoryFilter() {
-  const { categoryFilter, setCategoryFilter } = useProductStore();
-
+export function CategoryFilter({ selected, onChange }: CategoryFilterProps) {
   return (
-    <div className="flex flex-wrap gap-3 justify-center">
+    <div className="flex flex-wrap gap-2">
       {categories.map((category) => (
-        <motion.button
+        <button
           key={category.value}
-          onClick={() => setCategoryFilter(category.value)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className={cn(
-            'px-6 py-3 rounded-full font-medium text-sm uppercase tracking-wide transition-all duration-300',
-            categoryFilter === category.value
-              ? 'bg-primary text-white shadow-lg'
-              : 'bg-white text-grey border-2 border-light-grey hover:border-secondary hover:text-primary'
-          )}
+          onClick={() => onChange(category.value)}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+            selected === category.value
+              ? 'bg-secondary text-white'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          }`}
         >
           {category.label}
-        </motion.button>
+        </button>
       ))}
     </div>
   );
