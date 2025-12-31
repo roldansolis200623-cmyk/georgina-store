@@ -1,60 +1,47 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, AlertCircle, Info, AlertTriangle } from 'lucide-react';
-import { useProductStore } from '@/lib/store/useProductStore';
+import { CheckCircle, XCircle, AlertCircle, X } from 'lucide-react';
 
-const icons = {
-  success: Check,
-  error: AlertCircle,
-  info: Info,
-  warning: AlertTriangle,
-};
+interface NotificationProps {
+  type: 'success' | 'error' | 'warning';
+  message: string;
+  isVisible: boolean;
+  onClose: () => void;
+}
 
-const colors = {
-  success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
-  error: 'bg-red-50 border-red-200 text-red-800',
-  info: 'bg-blue-50 border-blue-200 text-blue-800',
-  warning: 'bg-amber-50 border-amber-200 text-amber-800',
-};
+export function Notification({ type, message, isVisible, onClose }: NotificationProps) {
+  const icons = {
+    success: <CheckCircle className="w-5 h-5 text-green-500" />,
+    error: <XCircle className="w-5 h-5 text-red-500" />,
+    warning: <AlertCircle className="w-5 h-5 text-yellow-500" />,
+  };
 
-const iconColors = {
-  success: 'text-emerald-500',
-  error: 'text-red-500',
-  info: 'text-blue-500',
-  warning: 'text-amber-500',
-};
-
-export function Notifications() {
-  const { notifications, removeNotification } = useProductStore();
+  const backgrounds = {
+    success: 'bg-green-50 border-green-200',
+    error: 'bg-red-50 border-red-200',
+    warning: 'bg-yellow-50 border-yellow-200',
+  };
 
   return (
-    <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2">
-      <AnimatePresence mode="popLayout">
-        {notifications.map((notification) => {
-          const Icon = icons[notification.type];
-          return (
-            <motion.div
-              key={notification.id}
-              layout
-              initial={{ opacity: 0, x: 100, scale: 0.8 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 100, scale: 0.8 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              className={`flex items-center gap-3 px-4 py-3 border rounded-xl shadow-lg max-w-sm ${colors[notification.type]}`}
-            >
-              <Icon className={`w-5 h-5 flex-shrink-0 ${iconColors[notification.type]}`} />
-              <p className="text-sm font-medium flex-1">{notification.message}</p>
-              <button
-                onClick={() => removeNotification(notification.id)}
-                className="p-1 hover:bg-black/5 rounded-lg transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </motion.div>
-          );
-        })}
-      </AnimatePresence>
-    </div>
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 0, y: 50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 50, scale: 0.9 }}
+          className={`fixed bottom-4 right-4 z-[100] flex items-center gap-3 px-4 py-3 rounded-lg border shadow-lg ${backgrounds[type]}`}
+        >
+          {icons[type]}
+          <span className="text-sm font-medium text-gray-700">{message}</span>
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-black/5 rounded-full transition-colors"
+          >
+            <X className="w-4 h-4 text-gray-400" />
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
