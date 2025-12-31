@@ -9,7 +9,7 @@ interface SupabaseProductStore {
   isLoading: boolean;
   error: string | null;
   fetchProducts: () => Promise<void>;
-  addProduct: (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  addProduct: (product: Partial<Product>) => Promise<void>;
   updateProduct: (id: number, updates: Partial<Product>) => Promise<void>;
   deleteProduct: (id: number) => Promise<void>;
 }
@@ -59,34 +59,33 @@ export const useSupabaseProducts = create<SupabaseProductStore>((set, get) => ({
 
   addProduct: async (productData) => {
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('products')
         .insert([{
           name: productData.name,
           category: productData.category,
-          subcategory: productData.subcategory,
+          subcategory: productData.subcategory || null,
           price: productData.price,
-          original_price: productData.originalPrice,
-          description: productData.description,
-          image: productData.image,
-          images: productData.images,
-          badge: productData.badge,
-          stock: productData.stock,
-          sku: productData.sku,
-          material: productData.material,
-          dimensions: productData.dimensions,
-          weight: productData.weight,
-          color: productData.color,
-          tags: productData.tags,
-        }])
-        .select()
-        .single();
+          original_price: productData.originalPrice || null,
+          description: productData.description || null,
+          image: productData.image || null,
+          images: productData.images || null,
+          badge: productData.badge || null,
+          stock: productData.stock || 10,
+          sku: productData.sku || null,
+          material: productData.material || null,
+          dimensions: productData.dimensions || null,
+          weight: productData.weight || null,
+          color: productData.color || null,
+          tags: productData.tags || null,
+        }]);
 
       if (error) throw error;
 
       await get().fetchProducts();
     } catch (error) {
       set({ error: (error as Error).message });
+      throw error;
     }
   },
 
@@ -97,20 +96,20 @@ export const useSupabaseProducts = create<SupabaseProductStore>((set, get) => ({
         .update({
           name: updates.name,
           category: updates.category,
-          subcategory: updates.subcategory,
+          subcategory: updates.subcategory || null,
           price: updates.price,
-          original_price: updates.originalPrice,
-          description: updates.description,
-          image: updates.image,
-          images: updates.images,
-          badge: updates.badge,
+          original_price: updates.originalPrice || null,
+          description: updates.description || null,
+          image: updates.image || null,
+          images: updates.images || null,
+          badge: updates.badge || null,
           stock: updates.stock,
-          sku: updates.sku,
-          material: updates.material,
-          dimensions: updates.dimensions,
-          weight: updates.weight,
-          color: updates.color,
-          tags: updates.tags,
+          sku: updates.sku || null,
+          material: updates.material || null,
+          dimensions: updates.dimensions || null,
+          weight: updates.weight || null,
+          color: updates.color || null,
+          tags: updates.tags || null,
           updated_at: new Date().toISOString(),
         })
         .eq('id', id);
@@ -120,6 +119,7 @@ export const useSupabaseProducts = create<SupabaseProductStore>((set, get) => ({
       await get().fetchProducts();
     } catch (error) {
       set({ error: (error as Error).message });
+      throw error;
     }
   },
 
@@ -135,6 +135,7 @@ export const useSupabaseProducts = create<SupabaseProductStore>((set, get) => ({
       await get().fetchProducts();
     } catch (error) {
       set({ error: (error as Error).message });
+      throw error;
     }
   },
 }));

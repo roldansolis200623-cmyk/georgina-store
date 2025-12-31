@@ -1,54 +1,41 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Package, TrendingDown, Percent, DollarSign } from 'lucide-react';
-import { useProductStore } from '@/lib/store/useProductStore';
-import { formatPrice } from '@/lib/utils/formatters';
+import { Package, DollarSign, Tag, AlertTriangle } from 'lucide-react';
+import { Product } from '@/types';
 
-export function StatsCards() {
-  const { products } = useProductStore();
+interface StatsCardsProps {
+  products: Product[];
+}
 
+export function StatsCards({ products }: StatsCardsProps) {
   const totalProducts = products.length;
-  const lowStockProducts = products.filter(
-    (p) => p.stock !== null && p.stock > 0 && p.stock <= 5
-  ).length;
-  const productsWithOffer = products.filter((p) => p.originalPrice).length;
-  const totalValue = products.reduce((acc, p) => acc + p.price * (p.stock || 1), 0);
+  const totalValue = products.reduce((sum, p) => sum + p.price, 0);
+  const onSale = products.filter((p) => p.originalPrice).length;
+  const lowStock = products.filter((p) => p.stock !== null && p.stock <= 5).length;
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
 
   const stats = [
-    {
-      label: 'Total Productos',
-      value: totalProducts,
-      icon: Package,
-      color: 'from-blue-500 to-blue-600',
-    },
-    {
-      label: 'Stock Bajo',
-      value: lowStockProducts,
-      icon: TrendingDown,
-      color: 'from-orange-500 to-orange-600',
-    },
-    {
-      label: 'En Oferta',
-      value: productsWithOffer,
-      icon: Percent,
-      color: 'from-green-500 to-green-600',
-    },
-    {
-      label: 'Valor Inventario',
-      value: formatPrice(totalValue),
-      icon: DollarSign,
-      color: 'from-secondary to-accent',
-      isPrice: true,
-    },
+    { label: 'Productos', value: totalProducts, icon: Package, color: 'from-blue-500 to-blue-600' },
+    { label: 'Valor Total', value: formatPrice(totalValue), icon: DollarSign, color: 'from-green-500 to-green-600' },
+    { label: 'En Oferta', value: onSale, icon: Tag, color: 'from-orange-500 to-orange-600' },
+    { label: 'Stock Bajo', value: lowStock, icon: AlertTriangle, color: 'from-red-500 to-red-600' },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4 mb-6">
+    <div className="grid grid-cols-2 gap-3 mb-6">
       {stats.map((stat, index) => (
         <motion.div
           key={stat.label}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
           className={`bg-gradient-to-br ${stat.color} rounded-xl p-4 text-white`}
@@ -57,9 +44,7 @@ export function StatsCards() {
             <stat.icon className="w-4 h-4 opacity-80" />
             <span className="text-xs opacity-80">{stat.label}</span>
           </div>
-          <p className={`font-bold ${stat.isPrice ? 'text-lg' : 'text-2xl'}`}>
-            {stat.value}
-          </p>
+          <p className="text-xl font-bold">{stat.value}</p>
         </motion.div>
       ))}
     </div>
