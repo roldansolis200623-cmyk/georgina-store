@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #1a1a1a;
+  --secondary: #e91e63;
+  --accent: #c2185b;
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --grey: #6b7280;
+  --light-grey: #f5f5f5;
+  --pink-light: #fce4ec;
+  --pink-soft: #f8bbd9;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  line-height: 1.6;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Scrollbar elegante */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e91e63;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c2185b;
+}
+
+/* Selección de texto */
+::selection {
+  background-color: #fce4ec;
+  color: #c2185b;
+}
+
+/* Animaciones suaves */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Gradientes suaves */
+.gradient-pink {
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+}
+
+.gradient-pink-white {
+  background: linear-gradient(180deg, #fce4ec 0%, #ffffff 100%);
+}
+
+/* Sombras suaves */
+.shadow-soft {
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.1);
+}
+
+.shadow-pink {
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.2);
+}
+
+/* Bordes decorativos */
+.border-pink-gradient {
+  border-image: linear-gradient(135deg, #e91e63, #f8bbd9) 1;
+}
+/* Gradient animation for banner */
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+  animation: gradient 3s ease infinite;
+}
+
+/* Pulse glow effect */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(233, 30, 99, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(233, 30, 99, 0.8), 0 0 30px rgba(233, 30, 99, 0.4); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Bounce animation */
+@keyframes bounce-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.animate-bounce-soft {
+  animation: bounce-soft 2s ease-in-out infinite;
+}
+
+/* Shake animation */
+@keyframes shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out infinite;
+}
