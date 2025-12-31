@@ -19,10 +19,11 @@ import { useProductStore } from '@/lib/store/useProductStore';
 import { useReviewStore } from '@/lib/store/useReviewStore';
 import { CATEGORIES } from '@/types';
 import { Product } from '@/types';
+import { useSupabaseProducts } from '@/lib/store/useSupabaseProducts';
 
 function TiendaContent() {
   const searchParams = useSearchParams();
-  const { products, loadFromStorage } = useProductStore();
+  const { products, fetchProducts, isLoading } = useSupabaseProducts();
   const { getAverageRating } = useReviewStore();
   const [mounted, setMounted] = useState(false);
   
@@ -43,9 +44,9 @@ function TiendaContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    loadFromStorage();
-  }, [loadFromStorage]);
+  setMounted(true);
+  fetchProducts();
+}, [fetchProducts]);
 
   useEffect(() => {
     const categoria = searchParams.get('categoria');

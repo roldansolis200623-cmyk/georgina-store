@@ -16,9 +16,10 @@ import { ProductCardHomeline } from '@/components/catalog/ProductCardHomeline';
 import { ProductModal } from '@/components/catalog/ProductModal';
 import { useProductStore } from '@/lib/store/useProductStore';
 import { Product } from '@/types';
+import { useSupabaseProducts } from '@/lib/store/useSupabaseProducts';
 
 export default function HomePage() {
-  const { products, loadFromStorage } = useProductStore();
+  const { products, fetchProducts, isLoading } = useSupabaseProducts();
   const [mounted, setMounted] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
@@ -26,9 +27,9 @@ export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    loadFromStorage();
-  }, [loadFromStorage]);
+  setMounted(true);
+  fetchProducts();
+}, [fetchProducts]);
 
   const featuredProducts = products.slice(0, 8);
   const saleProducts = products.filter(p => p.originalPrice).slice(0, 4);
