@@ -68,33 +68,37 @@ export default function HomePage() {
         onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
-      <section className="relative h-[80vh] min-h-[600px] overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/banners/hero-banner.jpg"
-            alt="Georgina Home - Muebles y Decoracion"
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-        
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <Link
-              href="/tienda"
-              className="inline-flex items-center gap-2 bg-secondary text-white px-8 py-4 rounded-full font-medium hover:bg-accent transition-all hover:shadow-lg"
-            >
-              VER TIENDA
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-          </motion.div>
-        </div>
-      </section>
+      {/* Hero Section - Optimizado para móvil */}
+<section className="relative h-[100svh] md:h-[80vh] min-h-[500px] md:min-h-[600px] overflow-hidden">
+  <div className="absolute inset-0">
+    <Image
+      src="/images/banners/hero-banner.jpg"
+      alt="Georgina Home - Muebles y Decoracion"
+      fill
+      className="object-cover object-[70%_center] md:object-center"
+      priority
+    />
+    {/* Overlay para mejor legibilidad en móvil */}
+    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent md:hidden" />
+  </div>
+  
+  <div className="absolute bottom-20 md:bottom-16 left-1/2 -translate-x-1/2 z-10 w-full px-4 md:px-0 md:w-auto">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.5 }}
+      className="text-center"
+    >
+      <Link
+        href="/tienda"
+        className="inline-flex items-center gap-2 bg-secondary text-white px-8 py-4 rounded-full font-medium hover:bg-accent transition-all hover:shadow-lg text-sm md:text-base"
+      >
+        VER TIENDA
+        <ArrowRight className="w-5 h-5" />
+      </Link>
+    </motion.div>
+  </div>
+</section>
 
       <section className="py-20 bg-gradient-to-b from-white to-pink-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

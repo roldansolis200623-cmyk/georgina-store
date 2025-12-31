@@ -61,7 +61,7 @@ body {
   color: #c2185b;
 }
 
-/* Animaciones suaves */
+/* Animaciones */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -80,29 +80,6 @@ body {
   animation: float 3s ease-in-out infinite;
 }
 
-/* Gradientes suaves */
-.gradient-pink {
-  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
-}
-
-.gradient-pink-white {
-  background: linear-gradient(180deg, #fce4ec 0%, #ffffff 100%);
-}
-
-/* Sombras suaves */
-.shadow-soft {
-  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.1);
-}
-
-.shadow-pink {
-  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.2);
-}
-
-/* Bordes decorativos */
-.border-pink-gradient {
-  border-image: linear-gradient(135deg, #e91e63, #f8bbd9) 1;
-}
-/* Gradient animation for banner */
 @keyframes gradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -113,7 +90,6 @@ body {
   animation: gradient 3s ease infinite;
 }
 
-/* Pulse glow effect */
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 5px rgba(233, 30, 99, 0.5); }
   50% { box-shadow: 0 0 20px rgba(233, 30, 99, 0.8), 0 0 30px rgba(233, 30, 99, 0.4); }
@@ -123,7 +99,6 @@ body {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* Bounce animation */
 @keyframes bounce-soft {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-5px); }
@@ -133,7 +108,6 @@ body {
   animation: bounce-soft 2s ease-in-out infinite;
 }
 
-/* Shake animation */
 @keyframes shake {
   0%, 100% { transform: rotate(0deg); }
   25% { transform: rotate(-5deg); }
@@ -142,4 +116,175 @@ body {
 
 .animate-shake {
   animation: shake 0.5s ease-in-out infinite;
+}
+
+/* Gradientes */
+.gradient-pink {
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+}
+
+.gradient-pink-white {
+  background: linear-gradient(180deg, #fce4ec 0%, #ffffff 100%);
+}
+
+/* Sombras */
+.shadow-soft {
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.1);
+}
+
+.shadow-pink {
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.2);
+}
+
+/* ==================== */
+/* RESPONSIVE MOBILE    */
+/* ==================== */
+
+/* Hero Section - Móvil */
+@media (max-width: 768px) {
+  /* Hero principal */
+  section[class*="h-screen"], 
+  section[class*="min-h-screen"] {
+    min-height: 100svh !important;
+  }
+
+  /* Imágenes de fondo en hero */
+  section[class*="relative"] > img[class*="object-cover"] {
+    object-position: 70% center !important;
+  }
+
+  /* Títulos grandes */
+  .font-playfair {
+    font-size: clamp(1.8rem, 8vw, 4rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Contenido del hero centrado */
+  section[class*="relative"] > div[class*="absolute"] {
+    padding: 1rem !important;
+  }
+
+  /* Botones más grandes en móvil para mejor touch */
+  button, a[class*="rounded"] {
+    min-height: 44px;
+  }
+}
+
+/* Productos Grid - Móvil */
+@media (max-width: 640px) {
+  /* Cards de productos más compactas */
+  .grid[class*="grid-cols-2"] {
+    gap: 0.75rem !important;
+  }
+
+  /* Texto más pequeño en cards */
+  .grid[class*="grid-cols-2"] h3 {
+    font-size: 0.875rem !important;
+  }
+
+  /* Precios legibles */
+  .grid[class*="grid-cols-2"] [class*="font-bold"] {
+    font-size: 1rem !important;
+  }
+}
+
+/* Header móvil */
+@media (max-width: 768px) {
+  header {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Logo más pequeño */
+  header .font-playfair {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* Footer móvil */
+@media (max-width: 768px) {
+  footer .grid {
+    gap: 2rem !important;
+  }
+}
+
+/* Drawer/Modal móvil */
+@media (max-width: 640px) {
+  [class*="fixed"][class*="right-0"][class*="w-full"] {
+    max-width: 100% !important;
+  }
+}
+
+/* Floating buttons - mejor posición en móvil */
+@media (max-width: 768px) {
+  [class*="fixed"][class*="bottom-"] {
+    bottom: 1rem !important;
+  }
+
+  [class*="fixed"][class*="right-6"] {
+    right: 1rem !important;
+  }
+}
+
+/* Formularios móvil */
+@media (max-width: 640px) {
+  input, textarea, select {
+    font-size: 16px !important; /* Previene zoom en iOS */
+  }
+}
+
+/* Imágenes responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Contenedores con padding seguro */
+@media (max-width: 768px) {
+  .max-w-7xl {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+/* Safe area para dispositivos con notch */
+@supports (padding-top: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+/* Hero específico */
+@media (max-width: 768px) {
+  /* Altura del hero en móvil usando svh para mejor compatibilidad */
+  .h-\[100svh\] {
+    height: 100svh;
+    height: 100dvh; /* Fallback */
+  }
+}
+
+/* Mejoras para cards de productos en móvil */
+@media (max-width: 640px) {
+  /* Grid de productos más compacto */
+  .grid-cols-2 {
+    gap: 0.5rem !important;
+  }
+  
+  /* Cards de categorías */
+  .h-64 {
+    height: 180px !important;
+  }
+}
+
+/* Botones flotantes en móvil */
+@media (max-width: 768px) {
+  /* WhatsApp button */
+  .fixed.bottom-24 {
+    bottom: 5rem !important;
+  }
+  
+  /* Cart button */
+  .fixed.bottom-6 {
+    bottom: 1rem !important;
+  }
 }
