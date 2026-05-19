@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛍️ Georgina Store
 
-## Getting Started
+> E-commerce moderno con panel de administración, carrito de compras, favoritos e integración con WhatsApp.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 ¿Qué es este proyecto?
+
+Georgina Store es una tienda online completa desarrollada para un cliente real. Cuenta con catálogo de productos, búsqueda y filtros avanzados, carrito de compras, sistema de favoritos, reseñas y un panel de administración para gestionar el inventario. Incluye modo oscuro/claro y animaciones fluidas.
+
+---
+
+## ✨ Funcionalidades
+
+- 🗂️ **Catálogo** — Grid de productos con filtros por categoría, precio y ordenamiento
+- 🔍 **Búsqueda** — Modal de búsqueda en tiempo real
+- 🛒 **Carrito** — Drawer lateral con gestión de cantidades
+- ❤️ **Favoritos** — Guardado de productos favoritos
+- ⭐ **Reseñas** — Sistema de valoraciones con estrellas
+- 🛠️ **Panel Admin** — CRUD de productos, estadísticas y gestión de inventario
+- 💬 **WhatsApp** — Botón flotante para contacto directo con el negocio
+- 🌙 **Tema oscuro/claro** — Toggle de tema persistente
+- 🎉 **Animaciones** — Transiciones con Framer Motion
+- 📱 **Responsive** — Diseño adaptado a móvil y escritorio
+
+---
+
+## 🛠️ Tech Stack
+
+| Capa | Tecnología |
+|------|-----------|
+| Framework | Next.js 14 (App Router) |
+| Lenguaje | TypeScript |
+| Estilos | Tailwind CSS |
+| Base de Datos | Supabase (PostgreSQL) |
+| Autenticación | Supabase Auth |
+| Estado global | Zustand |
+| Formularios | React Hook Form + Zod |
+| Animaciones | Framer Motion |
+| Íconos | Lucide React |
+| Notificaciones | Sonner |
+
+---
+
+## 📁 Estructura del proyecto
+
+```
+georgina-store/
+├── src/
+│   ├── app/                  # Rutas (Next.js App Router)
+│   │   ├── page.tsx          # Home
+│   │   ├── producto/[id]/    # Página de producto
+│   │   └── contacto/         # Página de contacto
+│   ├── components/
+│   │   ├── catalog/          # ProductCard, Filtros, Grid, Modal
+│   │   ├── admin/            # Panel de administración
+│   │   ├── cart/             # Carrito de compras
+│   │   ├── favorites/        # Favoritos
+│   │   ├── auth/             # Login / Registro
+│   │   ├── layout/           # Header, Footer, WhatsApp, Hero
+│   │   └── ui/               # Componentes reutilizables
+│   └── lib/
+│       └── utils/            # Helpers y utilidades
+└── public/
+    └── images/               # Banners, productos, about
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Variables de entorno
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Crea un archivo `.env.local` en la raíz con:
 
-## Learn More
+```env
+NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key
+NEXT_PUBLIC_WHATSAPP_NUMBER=51XXXXXXXXX
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🏃 Cómo correr el proyecto localmente
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Clonar el repo
+git clone https://github.com/roldansolis200623-cmyk/georgina-store.git
+cd georgina-store
 
-## Deploy on Vercel
+# Instalar dependencias
+npm install
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Configurar variables de entorno
+cp .env.example .env.local
+# (editar .env.local con tus credenciales de Supabase)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Correr en desarrollo
+npm run dev
+```
+
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
+
+---
+
+## 👨‍💻 Autor
+
+**Juan Gabriel Roldán Solís**  
+Desarrollador Full Stack | Ingeniería de Sistemas — CIBERTEC  
+📧 roldansolis200623@gmail.com
